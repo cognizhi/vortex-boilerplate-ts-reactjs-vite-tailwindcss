@@ -8,6 +8,7 @@ See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for th
 - **Language**: TypeScript 5 (strict)
 - **Frontend routing**: `vite-plugin-pages` (file-based) + `react-router` 8
 - **Backend routing**: Nitro 3 / H3 2 (file-based)
+- **Database**: SQLite via `better-sqlite3` + Drizzle ORM — schema/client in `db/`, migrations in `drizzle/`
 - **Styling**: Tailwind CSS v4 (CSS-first, no `tailwind.config.ts`) + `tw-animate-css`
 - **UI primitives**: shadcn/ui-style — Radix Slot, `class-variance-authority`, `cn()`
 - **Icons**: `lucide-react`, `@heroicons/react`
@@ -29,10 +30,12 @@ See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for th
 │   └── main.tsx
 ├── routes/api/            # Backend routes, file-based (+ *.test.ts)
 ├── middleware/             # Runs before every route handler
+├── db/                      # Drizzle schema.ts + client.ts (sqlite connection, migrate, seed)
+├── drizzle/                  # Generated SQL migrations (drizzle-kit generate), committed
 ├── e2e/                     # Playwright specs + global-setup.ts
 ├── configs/, scripts/
 ├── server.ts                # Nitro server entry
-├── vite.config.ts, vitest.config.ts, playwright.config.ts
+├── vite.config.ts, vitest.config.ts, playwright.config.ts, drizzle.config.ts
 ├── tsconfig.json             # src
 ├── tsconfig.node.json          # server/config/test files
 └── package.json
@@ -46,7 +49,16 @@ See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for th
 
 ## Data flow example
 
-`GET /api/hello`: `middleware/auth.ts` sets `event.context.user` → `routes/api/hello.ts` reads it and responds. `routes/api/users/[id].ts` shows the dynamic-route + `createError()` 404 pattern.
+`GET /api/hello`: `middleware/auth.ts` sets `event.context.user` → `routes/api/hello.ts` reads it and responds. `routes/api/users/[id].ts` shows the dynamic-route + `createError()` 404 pattern, backed by a real query against `db/client.ts`'s Drizzle instance.
+
+## Database
+
+`db/schema.ts` defines Drizzle tables; `db/client.ts` opens the SQLite connection, runs pending migrations from `drizzle/`, and seeds two demo users if the table is empty. Routes import `db` and the table objects directly (see `routes/api/users/`) — no repository layer.
+
+- `npm run db:generate` — after editing `db/schema.ts`, generates a new migration into `drizzle/` (via `drizzle-kit`, config in `drizzle.config.ts`)
+- `npm run db:studio` — browse the db in Drizzle Studio
+- The db file itself is `sqlite.db` at the project root (gitignored, created on first run); `drizzle/` migrations are committed
+- Under Vitest (`VITEST=true`), `db/client.ts` swaps in an in-memory db instead, so tests never touch the dev database
 
 ## Testing
 

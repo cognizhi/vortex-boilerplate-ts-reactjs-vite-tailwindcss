@@ -1,15 +1,16 @@
+import { eq } from "drizzle-orm";
 import { createError, defineHandler, getRouterParam } from "nitro/h3";
+
+import { db } from "../../../db/client";
+import { users } from "../../../db/schema";
 
 export default defineHandler((event) => {
   const id = getRouterParam(event, "id");
+  const numericId = Number(id);
 
-  // Mock user data
-  const users = {
-    "1": { id: 1, name: "John Doe", email: "john@example.com" },
-    "2": { id: 2, name: "Jane Smith", email: "jane@example.com" },
-  };
-
-  const user = users[id as keyof typeof users];
+  const user = Number.isNaN(numericId)
+    ? undefined
+    : db.select().from(users).where(eq(users.id, numericId)).get();
 
   if (!user) {
     throw createError({

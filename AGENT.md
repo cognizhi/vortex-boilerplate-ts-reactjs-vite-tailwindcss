@@ -35,3 +35,5 @@ Individually: `npm run lint`, `npm run typecheck`, `npm run test`, `npm run test
 - `auto-imports.d.ts` doesn't exist on a fresh clone — `pretypecheck`/`prebuild` generate it; give any new `tsc`-only script the same hook
 - Playwright runs on port 5178, not 5000, so it never collides with a dev server
 - `tsconfig.node.json` is `composite: true` — can't set `noEmit`, so it has its own `outDir` to avoid scattering compiled files
+- `db/client.ts` resolves `sqlite.db` and the `drizzle/` migrations folder from `process.cwd()`, not `import.meta.url` — Vite/Nitro/Vitest all transform this module, so its `import.meta.url` isn't a real `file://` URL
+- Under Vitest (`VITEST=true`), `db/client.ts` uses an in-memory db instead of `sqlite.db`, so route tests never touch or share the dev database

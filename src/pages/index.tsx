@@ -15,6 +15,8 @@ const techStack = [
   "Tailwind CSS v4",
   "React Router 8",
   "Nitro",
+  "SQLite",
+  "Drizzle ORM",
   "ESLint 9",
 ];
 

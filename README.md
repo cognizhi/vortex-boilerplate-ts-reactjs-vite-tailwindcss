@@ -4,7 +4,6 @@ A **template repository** for bootstrapping new full-stack TypeScript web apps: 
 
 This isn't a finished product. The homepage hero, mock API data, and a few other files are placeholder content meant to be replaced — see [Using This Template](#using-this-template) below.
 
-
 ---
 
 ## Using This Template
@@ -43,16 +42,16 @@ Visit http://localhost:5000 — you should see the template's placeholder homepa
 
 ### 3. Make it yours
 
-| File / path                                        | What to do                                                                                          |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `package.json` (`name`, `description`, `repository`) | Rename from `react-ts-starter` to your project.                                                     |
-| `src/pages/index.tsx`                                | Replace the placeholder hero copy and links with your real homepage.                                |
-| `routes/api/users/*`                                 | Replace the mock user list/handlers with real data access.                                          |
-| `middleware/auth.ts`                                 | This is a **stub** that attaches a hardcoded user to every request — swap in real auth before shipping. |
-| `src/helpers/demo.ts`                                | Example-only helper (also uses a Next.js-style env var, not Vite's `import.meta.env.VITE_*`) — delete or rewrite. |
-| `src/App.md`                                         | Leftover scaffolding notes, not used by the app — delete.                                            |
-| `PRODUCT.md`                                         | Replace with your actual product brief (problem, users, scope) — see the template inside the file.  |
-| `README.md` / `ARCHITECTURE.md` / `DESIGN.md`        | Update once your app diverges from the template's defaults.                                         |
+| File / path                                          | What to do                                                                                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `package.json` (`name`, `description`, `repository`) | Rename from `react-ts-starter` to your project.                                                                           |
+| `src/pages/index.tsx`                                | Replace the placeholder hero copy and links with your real homepage.                                                      |
+| `routes/api/users/*`                                 | Already backed by a real SQLite db via Drizzle (see [Database](#database)) — replace `db/schema.ts` with your own tables. |
+| `middleware/auth.ts`                                 | This is a **stub** that attaches a hardcoded user to every request — swap in real auth before shipping.                   |
+| `src/helpers/demo.ts`                                | Example-only helper (also uses a Next.js-style env var, not Vite's `import.meta.env.VITE_*`) — delete or rewrite.         |
+| `src/App.md`                                         | Leftover scaffolding notes, not used by the app — delete.                                                                 |
+| `PRODUCT.md`                                         | Replace with your actual product brief (problem, users, scope) — see the template inside the file.                        |
+| `README.md` / `ARCHITECTURE.md` / `DESIGN.md`        | Update once your app diverges from the template's defaults.                                                               |
 
 Then run `npm run verify` (see [Testing](#testing)) to confirm everything still passes before you start changing code.
 
@@ -74,6 +73,7 @@ Then run `npm run verify` (see [Testing](#testing)) to confirm everything still 
 
 - 🚀 **Nitro 3** server with H3 handler
 - 🛣️ **File-based API routing** in `/routes`
+- 🗄️ **SQLite + Drizzle ORM** — schema/client in `/db`, migrations in `/drizzle`
 - ⚡ **Fast development** with hot module replacement
 - 🔧 **TypeScript** support out of the box
 
@@ -385,6 +385,65 @@ export default defineEventHandler((event) => {
   event.context.user = { name: "John" };
 });
 ```
+
+---
+
+## Database
+
+SQLite via [`better-sqlite3`](https://github.com/WiseLibs/better-sqlite3) + [Drizzle ORM](https://orm.drizzle.team/).
+
+```
+db/
+├── schema.ts   # Table definitions
+└── client.ts   # Opens the sqlite connection, runs migrations, seeds demo data
+drizzle/        # Generated SQL migrations (committed to git)
+drizzle.config.ts
+```
+
+### Defining tables
+
+```typescript
+// db/schema.ts
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+});
+```
+
+### Querying from a route
+
+```typescript
+// routes/api/users/index.get.ts
+import { defineHandler } from "nitro/h3";
+
+import { db } from "../../../db/client";
+import { users } from "../../../db/schema";
+
+export default defineHandler(() => {
+  return { users: db.select().from(users).all() };
+});
+```
+
+See `routes/api/users/index.get.ts` and `routes/api/users/[id].ts` for the full read examples (list + lookup-by-id with a 404).
+
+### Migrations
+
+After changing `db/schema.ts`, generate a migration and commit the result:
+
+```bash
+npm run db:generate   # writes SQL to drizzle/
+```
+
+Migrations run automatically — `db/client.ts` applies any pending ones from `drizzle/` the first time it's imported, so there's no separate "run migrations" step for dev or prod.
+
+```bash
+npm run db:studio     # browse the db in Drizzle Studio
+```
+
+The db file (`sqlite.db`, project root) is gitignored and created on first run; `drizzle/` migrations are committed. Under Vitest, `db/client.ts` uses an in-memory db instead, so tests never touch or share the dev database.
 
 ---
 

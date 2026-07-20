@@ -45,3 +45,10 @@ coverage
 test-results
 playwright-report
 blob-report
+
+# SQLite dev/prod db — generated at runtime by db/client.ts, seeded via
+# migrations in ./drizzle (which ARE committed)
+sqlite.db
+sqlite.db-journal
+sqlite.db-wal
+sqlite.db-shm
