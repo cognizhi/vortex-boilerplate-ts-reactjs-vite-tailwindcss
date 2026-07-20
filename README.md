@@ -1,8 +1,60 @@
-# React + TypeScript + Nitro Full-Stack Starter
+# React + TypeScript + Nitro Full-Stack Template
 
-A production-ready full-stack starter template combining React 19 with TypeScript on the frontend and Nitro for the backend API. Built with Vite for blazing-fast development and optimized builds.
+A **template repository** for bootstrapping new full-stack TypeScript web apps: React 19 on the frontend, Nitro for the backend API, Tailwind CSS 4 + shadcn/ui for styling, and a working test setup on both sides — so your first commit on a new project is product code, not scaffolding.
 
-⭐ **Don't forget to star this repo if you find it useful!**
+This isn't a finished product. The homepage hero, mock API data, and a few other files are placeholder content meant to be replaced — see [Using This Template](#using-this-template) below.
+
+
+---
+
+## Using This Template
+
+### 1. Create your new repo
+
+**Option A — GitHub "Use this template" button (recommended)**
+
+On the [repo page](https://github.com/cognizhi/vortex-boilerplate-ts-reactjs-vite-tailwindcss), click **Use this template → Create a new repository**. This gives you a new repo with a clean git history (no commits from this template) that you can clone and start working in immediately.
+
+**Option B — Clone and re-point manually**
+
+```bash
+git clone https://github.com/cognizhi/vortex-boilerplate-ts-reactjs-vite-tailwindcss.git my-new-app
+cd my-new-app
+
+# Drop this template's history and start your own
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit from vortex template"
+
+# Point at your own remote
+git remote add origin <your-new-repo-url>
+git push -u origin main
+```
+
+### 2. Install and confirm it boots
+
+```bash
+npm install
+npm run dev
+```
+
+Visit http://localhost:5000 — you should see the template's placeholder homepage.
+
+### 3. Make it yours
+
+| File / path                                        | What to do                                                                                          |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `package.json` (`name`, `description`, `repository`) | Rename from `react-ts-starter` to your project.                                                     |
+| `src/pages/index.tsx`                                | Replace the placeholder hero copy and links with your real homepage.                                |
+| `routes/api/users/*`                                 | Replace the mock user list/handlers with real data access.                                          |
+| `middleware/auth.ts`                                 | This is a **stub** that attaches a hardcoded user to every request — swap in real auth before shipping. |
+| `src/helpers/demo.ts`                                | Example-only helper (also uses a Next.js-style env var, not Vite's `import.meta.env.VITE_*`) — delete or rewrite. |
+| `src/App.md`                                         | Leftover scaffolding notes, not used by the app — delete.                                            |
+| `PRODUCT.md`                                         | Replace with your actual product brief (problem, users, scope) — see the template inside the file.  |
+| `README.md` / `ARCHITECTURE.md` / `DESIGN.md`        | Update once your app diverges from the template's defaults.                                         |
+
+Then run `npm run verify` (see [Testing](#testing)) to confirm everything still passes before you start changing code.
 
 ---
 
