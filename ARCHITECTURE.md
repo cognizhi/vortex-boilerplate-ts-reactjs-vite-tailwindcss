@@ -1,0 +1,58 @@
+# Architecture
+
+See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for the visual system.
+
+## Stack
+
+- **Framework**: Vite 8 running a React 19 SPA + a Nitro 3 server together
+- **Language**: TypeScript 5 (strict)
+- **Frontend routing**: `vite-plugin-pages` (file-based) + `react-router` 8
+- **Backend routing**: Nitro 3 / H3 2 (file-based)
+- **Styling**: Tailwind CSS v4 (CSS-first, no `tailwind.config.ts`) + `tw-animate-css`
+- **UI primitives**: shadcn/ui-style — Radix Slot, `class-variance-authority`, `cn()`
+- **Icons**: `lucide-react`, `@heroicons/react`
+- **Auto-imports**: `unplugin-auto-import` — `react` + `react-router` need no import
+- **Fonts**: `unplugin-fonts` (config in `configs/fonts.config.ts`)
+- **Tests**: Vitest + Testing Library (unit/integration/UI), Playwright (E2E/smoke)
+- **Lint/format**: ESLint 9 + typescript-eslint, Prettier, Husky + lint-staged
+
+## Directory structure
+
+```
+.
+├── src/
+│   ├── components/ui/   # shadcn/ui-style primitives (+ *.test.tsx)
+│   ├── pages/            # Frontend routes, file-based (+ *.test.tsx)
+│   ├── hooks/, utils/, types/, constants/, data/, store/
+│   ├── test/              # Vitest setup
+│   ├── index.css           # Tailwind v4 + design tokens
+│   └── main.tsx
+├── routes/api/            # Backend routes, file-based (+ *.test.ts)
+├── middleware/             # Runs before every route handler
+├── e2e/                     # Playwright specs + global-setup.ts
+├── configs/, scripts/
+├── server.ts                # Nitro server entry
+├── vite.config.ts, vitest.config.ts, playwright.config.ts
+├── tsconfig.json             # src
+├── tsconfig.node.json          # server/config/test files
+└── package.json
+```
+
+## Routing
+
+**Frontend**: `src/pages/**/*.tsx` → routes (`about.tsx` → `/about`, `[id].tsx` → `/:id`, `[...all].tsx` → catch-all). `*.test.tsx` excluded via `Pages({ exclude })` in `vite.config.ts`.
+
+**Backend**: `routes/api/*.ts` → `/api/*`, `middleware/*.ts` runs first and can set `event.context`. Requires `nitro({ serverDir: "./" })` in `vite.config.ts` — default is `false` (no scanning). `*.test.ts` excluded via `nitro({ ignore })`.
+
+## Data flow example
+
+`GET /api/hello`: `middleware/auth.ts` sets `event.context.user` → `routes/api/hello.ts` reads it and responds. `routes/api/users/[id].ts` shows the dynamic-route + `createError()` 404 pattern.
+
+## Testing
+
+Four tiers, one worked example each. Commands and how to extend: [README.md](./README.md#testing), [AGENT.md](./AGENT.md).
+
+## Deployment
+
+- `ecosystem.config.js` (PM2) runs the real build: `.output/server/index.mjs`
+- `Dockerfile`/`docker-compose.yml` are stale (Node 18, plain `dist/`) — don't rely on them without fixing first
