@@ -34,8 +34,8 @@ git push -u origin main
 ### 2. Install and confirm it boots
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Visit http://localhost:5000 — you should see the template's placeholder homepage.
@@ -53,7 +53,7 @@ Visit http://localhost:5000 — you should see the template's placeholder homepa
 | `PRODUCT.md`                                         | Replace with your actual product brief (problem, users, scope) — see the template inside the file.                        |
 | `README.md` / `ARCHITECTURE.md` / `DESIGN.md`        | Update once your app diverges from the template's defaults.                                                               |
 
-Then run `npm run verify` (see [Testing](#testing)) to confirm everything still passes before you start changing code.
+Then run `bun run verify` (see [Testing](#testing)) to confirm everything still passes before you start changing code.
 
 ---
 
@@ -92,31 +92,31 @@ Then run `npm run verify` (see [Testing](#testing)) to confirm everything still 
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Start development server (frontend + backend)
-npm run dev
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 
 # Lint code
-npm run lint
+bun run lint
 
 # Type-check without emitting
-npm run typecheck
+bun run typecheck
 
 # Run unit/integration/UI tests (Vitest)
-npm run test
+bun run test
 
 # Run browser E2E + smoke tests (Playwright)
-npm run test:e2e
+bun run test:e2e
 
 # Run everything: lint, typecheck, test, test:e2e
-npm run verify
+bun run verify
 ```
 
 The dev server runs on:
@@ -434,13 +434,13 @@ See `routes/api/users/index.get.ts` and `routes/api/users/[id].ts` for the full 
 After changing `db/schema.ts`, generate a migration and commit the result:
 
 ```bash
-npm run db:generate   # writes SQL to drizzle/
+bun run db:generate   # writes SQL to drizzle/
 ```
 
 Migrations run automatically — `db/client.ts` applies any pending ones from `drizzle/` the first time it's imported, so there's no separate "run migrations" step for dev or prod.
 
 ```bash
-npm run db:studio     # browse the db in Drizzle Studio
+bun run db:studio     # browse the db in Drizzle Studio
 ```
 
 The db file (`sqlite.db`, project root) is gitignored and created on first run; `drizzle/` migrations are committed. Under Vitest, `db/client.ts` uses an in-memory db instead, so tests never touch or share the dev database.
@@ -471,7 +471,7 @@ list will drift as the app grows — treat the tier table above as the
 stable pattern to follow, and this as a snapshot to update when you add or
 remove a test file.
 
-**Vitest — `npm run test`** (6 files, 19 tests)
+**Vitest — `bun run test`** (6 files, 19 tests)
 
 | File                                 | Tier           | Covers                                                                                                                                                  |
 | ------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -482,7 +482,7 @@ remove a test file.
 | `src/components/ui/button.test.tsx`  | UI / component | `Button`: default/variant/size classes, `onClick` fires, disabled suppresses `onClick`, `asChild` renders as the child element instead of a `<button>`. |
 | `src/pages/index.test.tsx`           | UI / page      | Home hero heading + CTA render, tech-stack list renders, mobile nav dialog opens and lists links, dialog closes.                                        |
 
-**Playwright — `npm run test:e2e`** (2 files, 5 tests, + 1 setup file)
+**Playwright — `bun run test:e2e`** (2 files, 5 tests, + 1 setup file)
 
 | File                  | Tier                | Covers                                                                                                                                                        |
 | --------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -493,12 +493,12 @@ remove a test file.
 ### Running tests
 
 ```bash
-npm run test          # Vitest: unit + integration + component/page tests, single run
-npm run test:watch    # Vitest in watch mode
-npm run test:e2e      # Playwright: the full e2e/ suite against a real browser
-npm run test:smoke    # Playwright: just e2e/smoke.spec.ts
-npm run typecheck     # tsc --build, no emit
-npm run verify        # lint + typecheck + test + test:e2e, in that order
+bun run test          # Vitest: unit + integration + component/page tests, single run
+bun run test:watch    # Vitest in watch mode
+bun run test:e2e      # Playwright: the full e2e/ suite against a real browser
+bun run test:smoke    # Playwright: just e2e/smoke.spec.ts
+bun run typecheck     # tsc --build, no emit
+bun run verify        # lint + typecheck + test + test:e2e, in that order
 ```
 
 Playwright's dev server runs on a fixed port (`5178`, see

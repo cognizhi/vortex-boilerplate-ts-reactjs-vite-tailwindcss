@@ -12,10 +12,10 @@
 ## Before finishing a change
 
 ```bash
-npm run verify   # lint + typecheck + test + test:e2e
+bun run verify   # lint + typecheck + test + test:e2e
 ```
 
-Individually: `npm run lint`, `npm run typecheck`, `npm run test`, `npm run test:e2e`, `npm run test:smoke`.
+Individually: `bun run lint`, `bun run typecheck`, `bun run test`, `bun run test:e2e`, `bun run test:smoke`.
 
 ## Adding tests
 

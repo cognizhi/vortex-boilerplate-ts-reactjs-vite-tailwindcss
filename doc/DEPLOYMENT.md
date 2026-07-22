@@ -14,7 +14,7 @@
 On your local machine:
 
 ```bash
-npm run build
+bun run build
 ```
 
 This creates a `.output/` directory with:
@@ -68,7 +68,7 @@ Choose one of these methods:
 
 ```bash
 # Install PM2 globally
-npm install -g pm2
+bun install -g pm2
 
 # Copy PM2 config to VPS
 scp ecosystem.config.js user@your-vps:/var/www/your-app/
@@ -158,7 +158,7 @@ sudo systemctl restart nitro  # Restart
 
 ```bash
 # 1. Build locally
-npm run build
+bun run build
 
 # 2. Upload to VPS
 scp -r .output user@your-vps:/var/www/your-app/
