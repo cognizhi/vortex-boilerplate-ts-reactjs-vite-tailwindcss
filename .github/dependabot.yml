@@ -9,3 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      # typescript-eslint (and @typescript-eslint/*) cap their peer range at
+      # `typescript <6.1.0` — see https://github.com/typescript-eslint/typescript-eslint.
+      # A major bump here breaks `npm install` with an unresolved ERESOLVE peer
+      # conflict until typescript-eslint adds TS 6/7 support. Revisit by removing
+      # this ignore once that support lands.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
