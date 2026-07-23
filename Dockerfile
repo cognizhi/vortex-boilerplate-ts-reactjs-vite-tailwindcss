@@ -9,11 +9,8 @@ WORKDIR /app
 # Step 3: Copy package.json and bun.lock
 COPY package.json bun.lock ./
 
-# Step 4: Install dependencies. --ignore-scripts: better-sqlite3's install
-# script (prebuild-install → node-gyp fallback) fails under bun in this bare
-# image, and the build stage never loads the native binding anyway (tsc + vite
-# bundle only) — runtime installs happen outside this image with the prebuilt.
-RUN bun install --ignore-scripts
+# Step 4: Install dependencies.
+RUN bun install
 
 # Step 5: Copy the rest of the application code
 COPY . .

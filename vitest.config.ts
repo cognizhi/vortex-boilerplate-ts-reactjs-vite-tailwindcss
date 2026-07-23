@@ -25,9 +25,31 @@ export default defineConfig({
     },
   },
   test: {
-    environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
-    css: false,
-    exclude: ["node_modules", "dist", ".output", "e2e"],
+    // routes/**/*.test.ts (e.g. routes/api/users/*) import db/client.ts,
+    // which imports the Bun builtin bun:sqlite. Vite's jsdom/"client"
+    // environment can't externalize a builtin (browsers have no runtime to
+    // resolve it against) — only a server-like environment can, so those
+    // route tests run as a separate "server" project with environment:
+    // "node" instead of the default jsdom.
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "client",
+          environment: "jsdom",
+          setupFiles: ["./src/test/setup.ts"],
+          css: false,
+          exclude: ["node_modules", "dist", ".output", "e2e", "routes/**"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "server",
+          environment: "node",
+          include: ["routes/**/*.test.ts"],
+        },
+      },
+    ],
   },
 });

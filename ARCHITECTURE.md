@@ -8,7 +8,7 @@ See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for th
 - **Language**: TypeScript 5 (strict)
 - **Frontend routing**: `vite-plugin-pages` (file-based) + `react-router` 8
 - **Backend routing**: Nitro 3 / H3 2 (file-based)
-- **Database**: SQLite via `better-sqlite3` + Drizzle ORM — schema/client in `db/`, migrations in `drizzle/`
+- **Database**: SQLite via Bun's built-in `bun:sqlite` + Drizzle ORM — schema/client in `db/`, migrations in `drizzle/`. Requires the Bun runtime (dev, test, and production — see Deployment below)
 - **Styling**: Tailwind CSS v4 (CSS-first, no `tailwind.config.ts`) + `tw-animate-css`
 - **UI primitives**: shadcn/ui-style — Radix Slot, `class-variance-authority`, `cn()`
 - **Icons**: `lucide-react`, `@heroicons/react`
@@ -66,5 +66,5 @@ Four tiers, one worked example each. Commands and how to extend: [README.md](./R
 
 ## Deployment
 
-- `ecosystem.config.js` (PM2) runs the real build: `.output/server/index.mjs`
-- `Dockerfile`/`docker-compose.yml` are stale (Node 18, plain `dist/`) — don't rely on them without fixing first
+- `ecosystem.config.js` (PM2) runs the real build: `.output/server/index.mjs`, under Bun (`interpreter: "bun"`) — required by `db/client.ts`'s `bun:sqlite` import. `nitro.service` (systemd) is the non-PM2 equivalent, same requirement.
+- `Dockerfile`/`docker-compose.yml` build a static `dist/` served by nginx — don't rely on them for the Nitro/DB-backed API without fixing first (they never run `.output/server/index.mjs`)

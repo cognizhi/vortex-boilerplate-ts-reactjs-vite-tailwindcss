@@ -390,7 +390,7 @@ export default defineEventHandler((event) => {
 
 ## Database
 
-SQLite via [`better-sqlite3`](https://github.com/WiseLibs/better-sqlite3) + [Drizzle ORM](https://orm.drizzle.team/).
+SQLite via Bun's built-in [`bun:sqlite`](https://bun.sh/docs/api/sqlite) + [Drizzle ORM](https://orm.drizzle.team/). Requires the Bun runtime — no native module compilation needed.
 
 ```
 db/
