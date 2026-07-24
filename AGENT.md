@@ -12,16 +12,17 @@
 ## Before finishing a change
 
 ```bash
-bun run verify   # lint + typecheck + test — safe everywhere, including browserless containers
+bun run verify:full   # lint + typecheck + test + test:e2e — the full gate where a browser exists
+bun run verify        # the browser-free core gate (lint + typecheck + test) — safe everywhere
 ```
 
-`verify` deliberately does NOT include E2E. Playwright needs an installed
-Chromium; engineer/agent workspace containers don't have one, and E2E belongs
-to the QA phase (browser-equipped container) and CI. Where a browser exists,
-use `bun run verify:full` (verify + test:e2e). Every Playwright script
-(`test:e2e`, `e2e`, `test:smoke`) has a preflight that fails fast with a clear
-message when the browser is missing — if you hit it, run `bun run verify` and
-move on; do NOT retry E2E or try to install a browser.
+Prefer `verify:full`: Playwright needs an installed Chromium, and the
+environments this template targets (Vortex agent workspace containers for both
+engineer and QA, CI, local dev) ship one. Every Playwright script (`test:e2e`,
+`e2e`, `test:smoke`) has a preflight that fails fast with a clear message when
+the browser is genuinely missing — if you hit it, fall back to `bun run
+verify`, note the skipped E2E in your summary, and move on; do NOT retry E2E
+or try to install a browser.
 
 Individually: `bun run lint`, `bun run typecheck`, `bun run test`, `bun run test:e2e`, `bun run test:smoke`.
 
