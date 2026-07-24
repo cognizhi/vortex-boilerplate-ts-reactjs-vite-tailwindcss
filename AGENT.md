@@ -12,8 +12,16 @@
 ## Before finishing a change
 
 ```bash
-bun run verify   # lint + typecheck + test + test:e2e
+bun run verify   # lint + typecheck + test — safe everywhere, including browserless containers
 ```
+
+`verify` deliberately does NOT include E2E. Playwright needs an installed
+Chromium; engineer/agent workspace containers don't have one, and E2E belongs
+to the QA phase (browser-equipped container) and CI. Where a browser exists,
+use `bun run verify:full` (verify + test:e2e). Every Playwright script
+(`test:e2e`, `e2e`, `test:smoke`) has a preflight that fails fast with a clear
+message when the browser is missing — if you hit it, run `bun run verify` and
+move on; do NOT retry E2E or try to install a browser.
 
 Individually: `bun run lint`, `bun run typecheck`, `bun run test`, `bun run test:e2e`, `bun run test:smoke`.
 

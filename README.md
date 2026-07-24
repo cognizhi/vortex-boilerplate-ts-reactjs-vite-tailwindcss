@@ -115,8 +115,11 @@ bun run test
 # Run browser E2E + smoke tests (Playwright)
 bun run test:e2e
 
-# Run everything: lint, typecheck, test, test:e2e
+# Run the core gate: lint, typecheck, test (browser-free — works everywhere)
 bun run verify
+
+# Run everything incl. Playwright E2E (needs an installed browser)
+bun run verify:full
 ```
 
 The dev server runs on:
@@ -498,7 +501,8 @@ bun run test:watch    # Vitest in watch mode
 bun run test:e2e      # Playwright: the full e2e/ suite against a real browser
 bun run test:smoke    # Playwright: just e2e/smoke.spec.ts
 bun run typecheck     # tsc --build, no emit
-bun run verify        # lint + typecheck + test + test:e2e, in that order
+bun run verify        # lint + typecheck + test — no browser needed
+bun run verify:full   # verify + test:e2e (requires Playwright's Chromium)
 ```
 
 Playwright's dev server runs on a fixed port (`5178`, see
