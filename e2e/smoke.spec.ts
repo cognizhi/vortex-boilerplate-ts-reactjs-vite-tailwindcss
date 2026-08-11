@@ -27,3 +27,22 @@ test("the API responds", async ({ request }) => {
   const response = await request.get("/api/hello");
   expect(response.ok()).toBe(true);
 });
+
+/**
+ * Deliberately hits a DATABASE-backed route, not just /api/hello.
+ *
+ * db/client.ts imports the Bun builtin `bun:sqlite`, which only resolves when
+ * the dev server is running under the Bun runtime. If playwright.config.ts's
+ * webServer command ever loses its `--bun` (Vite's bin has a
+ * `#!/usr/bin/env node` shebang, so it is one edit away), node's ESM loader
+ * rejects that import and every database-backed route starts returning 500
+ * — while /api/hello and the static pages keep passing, so a suite that only
+ * probed those would stay green through a completely broken data layer.
+ * That is exactly how this regression shipped undetected once already.
+ */
+test("a database-backed route responds", async ({ request }) => {
+  const response = await request.get("/api/users");
+
+  expect(response.ok()).toBe(true);
+  expect(await response.json()).toHaveProperty("users");
+});
