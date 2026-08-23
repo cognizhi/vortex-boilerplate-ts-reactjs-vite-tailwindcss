@@ -454,7 +454,7 @@ The db file (`sqlite.db`, project root) is gitignored and created on first run; 
 
 The project ships with one worked example of each test tier, meant as a
 starting point to copy for new code rather than an exhaustive suite.
-[AGENT.md](./AGENT.md) has the fuller guide for AI coding agents on when to
+[AGENTS.md](./AGENTS.md) has the fuller guide for AI coding agents on when to
 add each kind and what to run after a change; this section is the quick
 reference.
 
@@ -634,7 +634,7 @@ AutoImport({
 ├── playwright.config.ts # Playwright configuration
 ├── tsconfig.json         # TypeScript config (src)
 ├── tsconfig.node.json    # TypeScript config (server/config/test files)
-├── AGENT.md              # How coding agents should use/add tests here (symlinked as CLAUDE.md)
+├── AGENTS.md             # The operating manual (CLAUDE.md and GEMINI.md symlink to it)
 ├── ARCHITECTURE.md        # How this is built: stack, routing, data flow, deployment
 ├── DESIGN.md               # Visual design system: tokens, theming, component pattern
 ├── PRODUCT.md                # What this boilerplate is, plus a product-brief template
@@ -669,7 +669,7 @@ docker run -p 5000:5000 react-ts-starter
 
 For production deployment on a VPS with nginx, PM2, and SSL configuration, see the complete guide:
 
-📖 **[VPS Deployment Guide](./DEPLOYMENT.md)**
+📖 **[Deployment](./ARCHITECTURE.md#deployment)**
 
 The guide includes:
 

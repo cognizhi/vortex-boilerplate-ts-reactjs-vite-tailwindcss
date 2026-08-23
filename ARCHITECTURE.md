@@ -62,7 +62,7 @@ See [PRODUCT.md](./PRODUCT.md) for what this is, [DESIGN.md](./DESIGN.md) for th
 
 ## Testing
 
-Four tiers, one worked example each. Commands and how to extend: [README.md](./README.md#testing), [AGENT.md](./AGENT.md).
+Four tiers, one worked example each. Commands and how to extend: [README.md](./README.md#testing), [AGENTS.md](./AGENTS.md).
 
 ## Deployment
 
