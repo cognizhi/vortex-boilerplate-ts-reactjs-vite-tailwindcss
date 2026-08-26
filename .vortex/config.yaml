@@ -71,3 +71,16 @@ commands:
     db-studio:
       command: bun run db:studio
       description: Open drizzle studio against the local sqlite.db
+
+# Spec-driven development (OpenSpec). Every sprint on this project — an idea sprint
+# of any kind, and an idea-less batch of defect tickets alike — produces one
+# validated OpenSpec change: a proposal, delta specs whose `#### Scenario:` blocks
+# become the ticket acceptance criteria and the QA test oracle, and a `tasks.md` the
+# platform ticks as each ticket merges. Completed changes are archived into
+# `openspec/specs/` at sprint close, which is the durable, per-capability spec of
+# record.
+#
+# `openspec/` is provisioned on the first spec-driven sprint; nothing to set up here.
+# Turn this off and the project runs a byte-identical pipeline without any of it.
+specDriven:
+  enabled: true
