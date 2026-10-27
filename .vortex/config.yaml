@@ -99,7 +99,7 @@ testEvidence:
     echo '</testsuites>'; } > .vortex-results/junit.xml;
     [ $u -eq 0 ] && [ $e -eq 0 ]
   junitPath: .vortex-results/junit.xml
-  testGlobs: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts"]
+  testGlobs: ["src/**/*.test.ts", "src/**/*.test.tsx", "routes/**/*.test.ts", "e2e/**/*.spec.ts"]
   configFiles: ["vitest.config.ts", "vite.config.ts", "playwright.config.ts"]
   redScaffoldGlobs: ["db/schema.ts", "drizzle/**"]
   timeoutSeconds: 900
