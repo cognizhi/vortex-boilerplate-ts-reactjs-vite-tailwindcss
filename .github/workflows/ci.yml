@@ -63,4 +63,8 @@ jobs:
         with:
           name: vortex-test-results
           path: .vortex-results/*.xml
-          if-no-files-found: warn
+          # The reports live in a hidden directory, which upload-artifact skips by
+          # default: without this the step passes and uploads nothing, and Vortex
+          # finds no official result for any test case.
+          include-hidden-files: true
+          if-no-files-found: error
