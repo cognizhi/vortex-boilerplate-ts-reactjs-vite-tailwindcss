@@ -40,8 +40,11 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      # Each test step also writes a JUnit report under .vortex-results/. The
+      # last step uploads them as `vortex-test-results`, which is where Vortex
+      # reads the official result for each test case (testEvidence.ciJobs).
       - name: Unit and integration tests
-        run: bun run test
+        run: bun run test -- --reporter=default --reporter=junit --outputFile.junit=.vortex-results/unit.xml
 
       - name: Build
         run: bun run build
@@ -50,4 +53,14 @@ jobs:
         run: bunx playwright install --with-deps chromium
 
       - name: E2E tests
-        run: bun run test:e2e
+        run: bun run test:e2e -- --reporter=list,junit
+        env:
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: .vortex-results/e2e.xml
+
+      - name: Upload test results for Vortex
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vortex-test-results
+          path: .vortex-results/*.xml
+          if-no-files-found: warn

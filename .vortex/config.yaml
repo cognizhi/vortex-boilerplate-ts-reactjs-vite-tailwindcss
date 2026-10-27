@@ -103,3 +103,8 @@ testEvidence:
   configFiles: ["vitest.config.ts", "vite.config.ts", "playwright.config.ts"]
   redScaffoldGlobs: ["db/schema.ts", "drizzle/**"]
   timeoutSeconds: 900
+  # The CI job that runs each level officially (.github/workflows/ci.yml).
+  ciJobs:
+    unit: build-and-test
+    integration: build-and-test
+    e2e: build-and-test
