@@ -84,3 +84,22 @@ commands:
 # Turn this off and the project runs a byte-identical pipeline without any of it.
 specDriven:
   enabled: true
+
+# Test traceability (architecture doc 43 §7): the platform runs this command for a
+# ticket's red and green runs and reads the one JUnit report it writes. vitest and
+# Playwright each write their own report; the command merges them, because a case
+# can be unit, integration or e2e and the platform reads a single file.
+testEvidence:
+  command: >-
+    mkdir -p .vortex-results && rm -f .vortex-results/*.xml;
+    NODE_ENV=test bun --bun vitest run --reporter=junit --outputFile=.vortex-results/unit.xml; u=$?;
+    PLAYWRIGHT_JUNIT_OUTPUT_NAME=.vortex-results/e2e.xml bunx playwright test --reporter=junit; e=$?;
+    { echo '<?xml version="1.0" encoding="UTF-8"?>'; echo '<testsuites>';
+    cat .vortex-results/unit.xml .vortex-results/e2e.xml 2>/dev/null | sed -e '/<?xml/d' -e 's#</\{0,1\}testsuites[^>]*>##g';
+    echo '</testsuites>'; } > .vortex-results/junit.xml;
+    [ $u -eq 0 ] && [ $e -eq 0 ]
+  junitPath: .vortex-results/junit.xml
+  testGlobs: ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/**/*.spec.ts"]
+  configFiles: ["vitest.config.ts", "vite.config.ts", "playwright.config.ts"]
+  redScaffoldGlobs: ["db/schema.ts", "drizzle/**"]
+  timeoutSeconds: 900

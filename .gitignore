@@ -43,6 +43,7 @@ auto-imports.d.ts
 *.tsbuildinfo
 coverage
 test-results
+.vortex-results
 playwright-report
 blob-report
 
