@@ -12,9 +12,13 @@
 # every new project.
 name: CI
 
+# Pushes run CI on dev and main only. An agent pushes to its ticket branch many
+# times, and Vortex reads the run on the ticket's pull request, so a push run on
+# `vortex/**` is paid for and read by nothing. Ticket and sprint branches are
+# covered by pull_request, which targets `vortex/**`.
 on:
   push:
-    branches: ["vortex/**", dev, main]
+    branches: [dev, main]
   pull_request:
     branches: ["vortex/**", dev, main]
 
