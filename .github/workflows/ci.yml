@@ -62,8 +62,13 @@ jobs:
       - name: Build
         run: bun run build
 
+      # The system packages come from the Ubuntu mirror. When the runner cannot reach it
+      # (observed 2026-11-11: "Temporary failure resolving 'azure.archive.ubuntu.com'"),
+      # apt retries for ten minutes and fails the job before any test runs. The
+      # ubuntu-24.04 image already ships the libraries Chromium needs, so after five
+      # minutes the browser is installed alone and the tests run without the mirror.
       - name: Install Playwright's Chromium
-        run: bunx playwright install --with-deps chromium
+        run: timeout 300 bunx playwright install --with-deps chromium || bunx playwright install chromium
 
       - name: E2E tests
         run: bun run test:e2e -- --reporter=list,junit
